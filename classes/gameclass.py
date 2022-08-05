@@ -23,7 +23,8 @@ class Game:
         while len(self.yourDeck) > 0 and len(self.oppDeck) > 0:
             self.playRound()
         else:
-            print('Game over!')
+            winner = 'You' if len(self.yourDeck) > 50 else 'The opponent'
+            print(f'Game over!\n{winner} won!')
 
     #method for dividing cards.
     def shuffleAndSplit(self):
@@ -44,6 +45,14 @@ class Game:
             oppCards.append(f'{card.string_val} of {card.suit}')
         print(yourCards, oppCards)
 
+    def clear_card_bank(self):
+        for card in self.CardBank:
+                    if card in self.yourDeck:
+                        self.yourDeck.pop(self.yourDeck.index(card))
+                    elif card in self.oppDeck:
+                        self.oppDeck.pop(self.oppDeck.index(card))
+
+    #method to run a round
     def playRound(self):
         input(f'Round: {self.rounds}\nPress Enter to draw...')
         # 'draw' the top card of each deck.
@@ -58,11 +67,7 @@ class Game:
         match self.yourCard.point_val > self.oppCard.point_val:
             case True: # if user win
                 # remove cards from each users deck.
-                for card in self.CardBank:
-                    if card in self.yourDeck:
-                        self.yourDeck.pop(self.yourDeck.index(card))
-                    elif card in self.oppDeck:
-                        self.oppDeck.pop(self.oppDeck.index(card))
+                self.clear_card_bank()
 
                 # add the cards to the winners deck.
                 self.yourDeck.extend(self.CardBank)
@@ -70,11 +75,7 @@ class Game:
 
             case False: # if user lose
                 # remove cards from each users deck.
-                for card in self.CardBank:
-                    if card in self.yourDeck:
-                        self.yourDeck.pop(self.yourDeck.index(card))
-                    elif card in self.oppDeck:
-                        self.oppDeck.pop(self.oppDeck.index(card))
+                self.clear_card_bank()
 
                 # add the cards to the winners deck.
                 self.oppDeck.extend(self.CardBank)
