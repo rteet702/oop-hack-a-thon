@@ -24,7 +24,7 @@ class Game:
             self.playRound()
         else:
             winner = 'You' if len(self.yourDeck) > 50 else 'The opponent'
-            print(f'Game over!\n{winner} won!')
+            print(f'\nGame over!\n{winner} won!\n')
 
     #method for dividing cards.
     def shuffleAndSplit(self):
@@ -45,16 +45,18 @@ class Game:
             oppCards.append(f'{card.string_val} of {card.suit}')
         print(yourCards, oppCards)
 
-    def clear_card_bank(self):
+    def remove_cards_from_deck(self, war = False):
         for card in self.CardBank:
                     if card in self.yourDeck:
                         self.yourDeck.pop(self.yourDeck.index(card))
                     elif card in self.oppDeck:
                         self.oppDeck.pop(self.oppDeck.index(card))
+        if war == False:
+            self.CardBank.clear()
 
     #method to run a round
     def playRound(self):
-        input(f'Round: {self.rounds}\nPress Enter to draw...')
+        input(f'\nRound: {self.rounds}\nPress Enter to draw...')
         # 'draw' the top card of each deck.
         self.yourCard = self.yourDeck[0]
         self.oppCard = self.oppDeck[0]
@@ -64,24 +66,22 @@ class Game:
 
         # compare the cards against each other.
         print(f'{self.yourCard.string_val} of {self.yourCard.suit} | {self.oppCard.string_val} of {self.oppCard.suit}')
-        match self.yourCard.point_val > self.oppCard.point_val:
-            case True: # if user win
-                # remove cards from each users deck.
-                self.clear_card_bank()
+        if self.yourCard.point_val > self.oppCard.point_val:
+            # remove cards from each users deck.
+            self.remove_cards_from_deck()
+            # add the cards to the winners deck.
+            self.yourDeck.extend(self.CardBank)
+            print('You won this round!')
 
-                # add the cards to the winners deck.
-                self.yourDeck.extend(self.CardBank)
-                print('You won this round!')
+        elif self.yourCard.point_val < self.oppCard.point_val:
+            # remove cards from each users deck.
+            self.remove_cards_from_deck()
+            # add the cards to the winners deck.
+            self.oppDeck.extend(self.CardBank)
+            print('You lost this round!')
 
-            case False: # if user lose
-                # remove cards from each users deck.
-                self.clear_card_bank()
-
-                # add the cards to the winners deck.
-                self.oppDeck.extend(self.CardBank)
-                print('You lost this round!')
-
-            case _: # if tie
-                print('Tie! Time for war! Draw again.')
+        else:
+            print('Tie! Time for war! Draw again.')
+            self.remove_cards_from_deck(True)
 
         self.rounds += 1
